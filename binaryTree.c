@@ -332,3 +332,115 @@ TNode *abpRemoveMenor(TNode *t, int(*cmp)(void *, void *), void **data){
 
     return NULL;
 }
+
+
+//questão 2 prova 2017.1
+
+int abNumNosAlturaH(TNode *t, int h){
+    if(t != NULL){
+        if(h == 0){
+            return 1;
+        }
+        else if(h < 0){
+            return 0;
+        }
+
+        else{
+            int nl = abNumNosAlturaH(t->l, h -1);
+            int nr = abNumNosAlturaH(t->r, h-1);
+
+            return nl+nr;
+        }
+    }
+
+    return 0;
+}
+
+
+//questao 3 prova 2017.1
+
+int abpCalculaDiferencaMenorParaMaior(TNode *t, int(*getavalue)(void *)){
+    if(t != NULL){
+        TNode *maior = t;
+        TNode *menor = t;
+
+        while(menor->l != NULL){
+            menor = menor -> l;
+        }
+
+        while (maior->r != NULL){
+            maior = maior -> r;
+        }
+
+        return (getavalue(maior) - getavalue(menor));
+
+    }
+
+    return 0;
+}
+
+//questao 2 prova 2023.1
+int abCalcNumNosGrau1(TNode *t){
+    if(t != NULL){
+        int nl, nr;
+        if((t->r == NULL && t->l != NULL )|| (t->r != NULL && t->l == NULL)){
+            nl = abCalcNumNosGrau1(t->l);
+            nr = abCalcNumNosGrau1(t->r);
+            return nl + nr + 1;
+        }
+
+        else{
+            nl = abCalcNumNosGrau1(t->l);
+            nr = abCalcNumNosGrau1(t->r);
+
+            return nl + nr;
+        }
+    }
+
+    return 0;
+}
+
+//questao 3 prova 2023.1
+int comparaArvores(TNode *t1, TNode *t2, int(*getvalue)(void *)){
+    if(t1 != NULL && t2 != NULL){
+        if(getvalue(t1) == getvalue(t2)){
+        
+            return comparaArvores(t1->r, t2->r, getvalue) && comparaArvores(t1->l, t2->l, getvalue);
+            
+        }
+
+        else{
+            return 0;
+        }
+    }
+    else if(t1 == NULL && t2 == NULL){
+        return 1;
+    }
+
+    return 0;
+}
+
+
+//questao 4 prova 2023.1
+TNode *abpRemoveMaior(TNode *t, int(*cmp)(void *, void *)){
+    if(t != NULL){
+        if(t -> r == NULL){ 
+            if(t->l == NULL){
+                free(t);
+                return NULL;
+            }
+            else{
+                TNode *aux = t -> l;
+                free(t);
+                return aux;
+            }
+        }
+        else{
+            t->r = abpRemoveMaior(t->r, cmp); 
+            return t;   
+        }
+    }
+
+    return NULL;
+}
+
