@@ -444,3 +444,240 @@ TNode *abpRemoveMaior(TNode *t, int(*cmp)(void *, void *)){
     return NULL;
 }
 
+//questao 6 lista de exercicios
+int abNumNosUmFilhoOuMais(TNode *t){
+    if(t != NULL){
+        if(t->l != NULL || t->r != NULL){
+            return 1 + abNumNosUmFilhoOuMais(t->l) + abNumNosUmFilhoOuMais(t->r);
+        }
+    }
+
+    return 0;
+}
+
+int abAltura(TNode *t){
+    if(t != NULL){
+        int hr, hl, h;
+        hr = 1 + abAltura(t->r);
+        hl = 1 + abAltura(t->l);
+        if(hr > hl){
+            h = hr;
+        }
+        else{
+            h = hl;
+        }
+
+        return h;
+    }
+
+    return 0;
+}
+
+
+//questao 10 da lista de exercicios, tenho q corrigir
+int ehCompleta(TNode *){
+    if(t != NULL){
+        if(t -> r != NULL && t->l != NULL){
+            return ehCompleta(t->r) && ehCompleta(t->l);
+        }
+
+        else if(t -> r == NULL && t-> l == NULL){
+            return TRUE;
+        }
+        else{
+            return FALSE;
+        }
+    }
+
+    return TRUE;
+}
+
+//questao 8 da lista de exercicios
+
+
+void visitarNosPorNivelOrdem(TNode *t, void (*visit)(void *)){
+    if(t != NULL){
+        //primeiro calcularei a altura da arvore
+        int h = abAltura(TNode *t);
+
+        for(int i = 0; i < h; i++){
+            visitNosAlturaH(t, i, visit);
+        }
+
+    }
+}
+
+void visitNosAlturaH(TNode *t, int h, void(*visit)(void *)){
+    if(t != NULL){
+        if(h >= 0){
+            if(h == 0){
+                visit(t);
+            }
+
+            else{
+                visitNosAlturaH(t->r, h-1, visit);
+                visitNosAlturaH(t->l, h-1, visit);
+            }
+        }
+    }
+}
+
+
+void visitarNosPorNivelOrdemReversa(TNode *t, void(*visit)(void *)){
+    if(t != NULL){
+        //primeiro calcularei a altura da arvore
+        int h = abAltura(TNode *t);
+
+        for(int i = h-1; i <= 0; i--){
+            visitNosAlturaH(t, i, visit);
+        }
+    }
+}
+
+//questao 11
+
+TNode *abRetornarCantoEsquerdo(TNode *t){
+    if(t != NULL){
+        if(t->l != NULL){
+            return abRetornarCantoEsquerdo(t->l);
+        }
+
+        else{
+            return t->data;
+        }
+    }
+
+    return NULL;
+
+}
+
+
+//questao 12
+
+int verificarSeEhABP(TNode *t, int(*cmp)(void *, void *)) {
+
+    if (t != NULL) {
+        if (t->l != NULL && cmp(t->l->data, t->data) >= 0) {
+            return false;
+        }
+
+    
+        if (t->r != NULL && cmp(t->r->data, t->data) < 0) {
+            return false;
+        }
+
+        return verificarSeEhABP(t->l, cmp) && verificarSeEhABP(t->r, cmp);
+
+
+    }
+
+    return TRUE;   
+}
+
+
+//questao 938 leetcode 
+//retornar a soma dos valores dos nos de uma arvore em que os valores esta dentro de um intervalo
+int rangeSumBST(TNode *root, int low, int high) {
+    if(root != NULL){
+        if(root -> val >= low && root->val <= high){
+            return root->val + rangeSumBST(root->left, low, high) + rangeSumBST(root->right, low, high);      
+            
+        }
+
+        else if(root -> val > high){
+            return rangeSumBST(root->left, low, high);
+        }
+
+        else if(root -> val < low){
+            return rangeSumBST(root->right, low ,high);
+        }
+    }
+
+    return 0;
+}
+
+
+//questao 1379 leetcode
+// Given two binary trees original and cloned and given a reference to a node target in the original tree.
+
+// The cloned tree is a copy of the original tree.
+
+// Return a reference to the same node in the cloned tree.
+
+// Note that you are not allowed to change any of the two trees or the target node and the answer must be a reference to a node in the cloned tree.
+
+TNode* getTargetCopy(TNode* original, TNode* cloned, TNode* target) {
+        if(original != NULL && cloned != NULL){
+            if(original->data == target->data && cloned->data == target -> data){
+                return cloned;
+            }
+
+            else{
+                possibilidade1 = getTargetCopy(original->l, cloned->l, target);
+                if(possibilidade1 != NULL){
+                    return possibilidade1;
+                }
+                possibilidade2 = getTargetCopy(original->r, cloned->r, target);
+                if(possibilidade2 != NULL){
+                    return possibilidade2;
+                }
+
+                return NULL;
+
+                
+            }
+        }
+
+        return NULL;
+}
+
+//questao 700 leetcode 
+
+// You are given the root of a binary search tree (BST) and an integer val.
+// Find the node in the BST that the node's value equals val and return the subtree rooted with that node. If such a node does not exist, return null.
+
+TNode* searchBST(TNode* root, int val) {
+    if(root != NULL){
+        if(root->val == val){
+            return root;
+        }
+        else if(root->val > val){
+            return searchBST(root->left, val);
+        }
+
+        return searchBST(root->right, val);
+    }
+
+    return NULL;
+}
+
+
+//questao 617 leetcode
+// You are given two binary trees root1 and root2.
+// Imagine that when you put one of them to cover the other, some nodes of the two trees are overlapped while the others are not. You need to merge the two trees into a new binary tree. The merge rule is that if two nodes overlap, then sum node values up as the new value of the merged node. Otherwise, the NOT null node will be used as the node of the new tree.
+// Return the merged tree.
+// Note: The merging process must start from the root nodes of both trees.
+
+TNode* mergeTrees(TNode* root1, TNode* root2) {
+    if(root1 != NULL && root2 != NULL){
+        root1->val += root2->val;
+        
+        root1->left = mergeTrees(root1->left, root2->left);
+
+        root1->right = mergeTrees(root1->right, root2->right);
+        
+
+        return root1;
+    }
+
+    else if(root1 != NULL && root2 == NULL){
+        return root1;
+    }
+
+    else if(root1 == NULL && root2 != NULL){
+        return root2;
+    }
+
+    return NULL;
+}
+
