@@ -341,10 +341,7 @@ int abNumNosAlturaH(TNode *t, int h){
         if(h == 0){
             return 1;
         }
-        else if(h < 0){
-            return 0;
-        }
-
+        
         else{
             int nl = abNumNosAlturaH(t->l, h -1);
             int nr = abNumNosAlturaH(t->r, h-1);
@@ -403,7 +400,7 @@ int abCalcNumNosGrau1(TNode *t){
 //questao 3 prova 2023.1
 int comparaArvores(TNode *t1, TNode *t2, int(*getvalue)(void *)){
     if(t1 != NULL && t2 != NULL){
-        if(getvalue(t1) == getvalue(t2)){
+        if(getvalue(t1) > getvalue(t2)){
         
             return comparaArvores(t1->r, t2->r, getvalue) && comparaArvores(t1->l, t2->l, getvalue);
             
@@ -579,7 +576,7 @@ int verificarSeEhABP(TNode *t, int(*cmp)(void *, void *)) {
 //retornar a soma dos valores dos nos de uma arvore em que os valores esta dentro de um intervalo
 int rangeSumBST(TNode *root, int low, int high) {
     if(root != NULL){
-        if(root -> val >= low && root->val <= high){
+        if(root -> data >= low && root->data <= high){
             return root->val + rangeSumBST(root->left, low, high) + rangeSumBST(root->right, low, high);      
             
         }
@@ -595,6 +592,8 @@ int rangeSumBST(TNode *root, int low, int high) {
 
     return 0;
 }
+
+
 
 
 //questao 1379 leetcode
@@ -680,4 +679,193 @@ TNode* mergeTrees(TNode* root1, TNode* root2) {
 
     return NULL;
 }
+
+//questao 897 leetcode
+// Given the root of a binary search tree, rearrange the tree in in-order so that the leftmost node in the tree is now the 
+// root of the tree, and every node has no left child and only one right child.
+
+TNode* increasingBST(TNode* root, TNode *tail) {
+    if(root != NULL){
+        TNode *res = increasingBST(root->l, root);
+        root->l = NULL;
+        root->r = increasingBST(root->right, tail);
+
+        return res;
+    }
+    else{
+        return tail;
+    }
+
+}
+
+//questao 2331 leetcode
+
+int evaluateTree(TNode* root) {
+    if(root->l != NULL && root->r != NULL){
+        if(root->data == 3){
+            return evaluateTree(root->l) || evaluateTree(root->r);
+        }
+        else{
+            return evaluateTree(root->l) && evaluateTree(root->r);
+        }
+    }
+
+    else{
+        if(root->data == 0){
+            return FALSE;
+        }
+
+        else{
+            return TRUE;
+        }
+    }
+}
+
+
+//questao 226 leetcode
+//Given the root of a binary tree, invert the tree, and return its root.
+
+TNode* invertTree(TNode* root) {
+    if(root != NULL){
+        TNode* temp = root->l;
+        root->l = invertTree(root->r);
+        root->r = invertTree(temp);
+
+        return root;
+    }
+
+    else{
+        return NULL;
+    }
+}
+
+
+//questao 104
+// Given the root of a binary tree, return its maximum depth.
+// A binary tree's maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.
+
+int maxDepth(TNode* root) {
+    if(root != NULL){
+        int rightPath = 1 + maxDepth(root->r);
+        int leftPath = 1 + maxDepth(root -> l);
+
+        if(rightPath >= leftPath){
+            return rightPath;
+        }
+
+        else{
+            return leftPath;
+        }
+    }
+    return 0;
+}
+
+
+int numNosUmFilhoOuMenos(TNode *t){
+    if(t != NULL){
+        if(t->l != NULL && t->r != NULL){
+            return 0 + numNosUmFilhoOuMenos(t->l) + numNosUmFilhoOuMenos(t->r);
+        }
+        else{
+            if(t -> l != NULL){
+                return 1 + numNosUmFilhoOuMenos(t->l);
+            }
+            else if(t -> r != NULL){
+                return 1 + numNosUmFilhoOuMenos(t->r);
+            }
+
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+TNode *abRetornarCantoEsquerdoNivelK(TNode *t, int level, int k){
+    if(t != NULL){
+        if(k == level){
+            return t;
+        }
+        else{
+            TNode *esquerdo = abRetornarCantoEsquerdoNivelK(t->l, level +1, k);
+            TNode *direito = abRetornarCantoEsquerdoNivelK(t->k, level+1, k);
+            if(esquerdo != NULL){
+                return esquerdo;
+            }
+            else{
+                return direito;
+            }
+        }
+    }
+
+    return NULL;
+}
+
+
+TNode *removeMaiorABP(TNode *t, int(*cmp)(void *)){
+    if(t != NULL){
+        if(t->r == NULL){
+            if(t -> l != NULL){
+                TNode *aux = t->l;
+                free(t);
+                return aux;
+            }
+            else{
+                free(t);
+                return NULL;
+            }
+        }
+        else{
+            t->r = removeMaiorABP(t->r, cmp);
+            return t;
+        }
+    }
+}
+
+int arvore1maiorque2(TNode *t, TNode *k, int(*getvalue)(void*)){
+    if(t != NULL && k != NULL){
+        if(getvalue(t) > getvalue(k)){
+            int checagemDireita = (t->r, k->r, getvalue);
+            int checagemEsquerda = (t->l, k->l, getvalue);
+
+            if(checagemDireita == 1 && checagemEsquerda == 1){
+                return 1;
+            }
+            else{
+                return 0;
+            }
+        }
+        else{
+            return 0;
+        }
+    }
+
+    else if(t != NULL && k != NULL){
+        return 1;
+    }
+
+    return 0;
+
+}       
+
+
+int numeroNosGrau1(TNode *t){
+    if(t != NULL){
+        if((t->r != NULL && t->l == NULL) || (t->r == NULL && t->l != NULL)){
+            return 1 + numeroNosGrau1(t->r) + numeroNosGrau1(t->l);
+        }
+
+        else{
+            return numeroNosGrau1(t->r) + numeroNosGrau1(t->l);
+        }
+    }
+
+    return 0;
+}
+
+
+
+
+
+
 
